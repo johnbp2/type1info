@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type 1 Diabetes: Understanding & Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <!-- Chosen Palette: Warm Neutral (bg-gray-50, text-gray-800) with Cool Teal Accent (bg-teal-600, border-teal-500) -->
+    <!-- Application Structure Plan: Designed an Educational Dashboard with a thematic, vertical scroll. Sections flow from: Overview (What is it?) -> The Science (How it works) -> Daily Management (The routine) -> Key Metrics (Goal visualization) -> Future Focus. This structure prioritizes user education and task completion (management routine) over mirroring a complex report, making it highly user-friendly. -->
+    <!-- Visualization & Content Choices: Report Info: Daily Management Steps -> Goal: Organize/Actionable -> Viz/Method: Interactive Stepper/Content Panel -> Interaction: Click step button to reveal detailed instructions -> Justification: Breaks down the daunting daily routine into simple, sequential tasks. | Report Info: Time-In-Range Goals -> Goal: Quantify Progress -> Viz/Method: Chart.js Doughnut Chart -> Interaction: Static display with contextual text update (via JS) -> Justification: Visually reinforces the key success metric (TIR). | Report Info: Glucose Trends -> Goal: Illustrate impact -> Viz/Method: Chart.js Line Chart (Comparing ideal vs. typical high) -> Interaction: Static trend display for educational purposes -> Justification: Helps users understand post-meal glucose curve behavior. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        .nav-active {
+            color: #0d9488; 
+            font-weight: 600;
+            border-bottom: 2px solid #0d9488;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; 
+            max-height: 400px;
+        }
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans leading-relaxed">
+
+    <header class="text-center py-12 bg-white shadow-lg">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-teal-700 mb-2">Living with Type 1 Diabetes</h1>
+        <p class="text-xl text-gray-600 font-light max-w-2xl mx-auto px-4">An interactive guide to understanding the condition and mastering daily glucose management.</p>
+    </header>
+
+    <nav id="navbar" class="sticky top-0 bg-white shadow-xl z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-center space-x-4 md:space-x-8 py-3 overflow-x-auto text-sm md:text-base">
+                <a href="#overview" data-section="overview" class="nav-link whitespace-nowrap text-gray-600 hover:text-teal-700 pb-2 transition-all duration-200">Overview</a>
+                <a href="#science" data-section="science" class="nav-link whitespace-nowrap text-gray-600 hover:text-teal-700 pb-2 transition-all duration-200">The Science</a>
+                <a href="#management" data-section="management" class="nav-link whitespace-nowrap text-gray-600 hover:text-teal-700 pb-2 transition-all duration-200">Daily Cycle</a>
+                <a href="#metrics" data-section="metrics" class="nav-link whitespace-nowrap text-gray-600 hover:text-teal-700 pb-2 transition-all duration-200">Key Metrics</a>
+                <a href="#future" data-section="future" class="nav-link whitespace-nowrap text-gray-600 hover:text-teal-700 pb-2 transition-all duration-200">Long-Term Care</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-4 md:p-8 space-y-20">
+
+        <!-- 1. Overview Section -->
+        <section id="overview" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-2 border-teal-600 pb-2">1. Overview: What is Type 1 Diabetes?</h2>
+            <div class="bg-white p-6 rounded-xl shadow-2xl">
+                <p class="text-lg mb-6 text-gray-700">This section provides a brief, contextual introduction to **Type 1 Diabetes (T1D)**, defining it as an **autoimmune condition** and outlining the key symptoms users should be aware of. The goal is to establish a foundational understanding before diving into mechanics and management.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2">
+                        <h3 class="text-2xl font-semibold text-teal-700 mb-3">The Autoimmune Condition</h3>
+                        <p class="mb-4">T1D is a chronic condition where the **pancreas produces very little or no insulin** because the body's own immune system mistakenly attacks and destroys the insulin-producing beta cells. It is **not** preventable and is **not** caused by diet or lifestyle.</p>
+                        <p class="mb-4 font-medium text-lg">The primary management goal is to **replace the missing insulin** to keep blood glucose levels in a healthy range (Time-In-Range).</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-teal-700 mb-3">Key Symptoms (Click to Expand)</h3>
+                        <div id="symptoms-list" class="space-y-2">
+                            <button class="w-full text-left bg-gray-100 p-3 rounded-lg font-medium hover:bg-teal-50 transition duration-200" onclick="toggleDetail('symptom-thirst')">Excessive Thirst / Urination</button>
+                            <p id="symptom-thirst" class="hidden text-sm p-2 pl-4 text-gray-600 border-l-2 border-teal-500">The body tries to flush out excess sugar through urine, leading to dehydration and intense thirst.</p>
+                            
+                            <button class="w-full text-left bg-gray-100 p-3 rounded-lg font-medium hover:bg-teal-50 transition duration-200" onclick="toggleDetail('symptom-weight')">Unexplained Weight Loss</button>
+                            <p id="symptom-weight" class="hidden text-sm p-2 pl-4 text-gray-600 border-l-2 border-teal-500">Without insulin, the body cannot use glucose for energy and starts breaking down fat and muscle.</p>
+
+                            <button class="w-full text-left bg-gray-100 p-3 rounded-lg font-medium hover:bg-teal-50 transition duration-200" onclick="toggleDetail('symptom-fatigue')">Extreme Fatigue</button>
+                            <p id="symptom-fatigue" class="hidden text-sm p-2 pl-4 text-gray-600 border-l-2 border-teal-500">The lack of energy from glucose results in persistent tiredness and weakness.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. The Science Section -->
+        <section id="science" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-2 border-teal-600 pb-2">2. The Science: Glucose, Insulin, and the Missing Key</h2>
+            <div class="bg-white p-6 rounded-xl shadow-2xl">
+                <p class="text-lg mb-8 text-gray-700">This section uses a simplified, non-SVG diagram to explain the **role of insulin** and what happens when it's absent. Understanding this foundational mechanism is crucial for appreciating the purpose of insulin therapy.</p>
+                
+                <div class="flex flex-col items-center">
+                    <div class="text-2xl font-bold text-center mb-6 text-teal-600">The Cellular Energy Pathway</div>
+                    <div class="w-full grid grid-cols-3 gap-4 text-center">
+                        <!-- Step 1: Glucose -->
+                        <div class="p-4 rounded-lg bg-yellow-100 border border-yellow-300">
+                            <span class="text-3xl">🍲</span>
+                            <p class="mt-2 font-semibold">1. Glucose Enters</p>
+                            <p class="text-sm">From food, sugar enters the bloodstream.</p>
+                        </div>
+                        <!-- Step 2: Insulin/Pancreas -->
+                        <div class="p-4 rounded-lg bg-pink-100 border border-pink-300 relative">
+                            <span class="text-3xl">🔑</span>
+                            <p class="mt-2 font-semibold">2. Insulin (The Key)</p>
+                            <p class="text-sm">In T1D, the pancreas doesn't make this key.</p>
+                            <div class="absolute inset-0 flex items-center justify-center bg-red-100 bg-opacity-70 text-red-700 font-extrabold text-lg rounded-lg">MISSING</div>
+                        </div>
+                        <!-- Step 3: Cell/Energy -->
+                        <div class="p-4 rounded-lg bg-green-100 border border-green-300">
+                            <span class="text-3xl">🧱</span>
+                            <p class="mt-2 font-semibold">3. Cell Access</p>
+                            <p class="text-sm">Glucose cannot enter the cells for energy without the key.</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 p-4 w-full bg-gray-100 rounded-lg text-center">
+                        <p class="font-medium">Result: Glucose builds up in the bloodstream (High BG), and the cells starve for energy.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Daily Management Cycle Section -->
+        <section id="management" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-2 border-teal-600 pb-2">3. Daily Management Cycle: Test, Calculate, Dose</h2>
+            <div class="bg-white p-6 rounded-xl shadow-2xl">
+                <p class="text-lg mb-8 text-gray-700">The daily management of T1D revolves around a precise, repetitive routine. Use the interactive buttons below to explore the **three critical steps** you take before every meal to maintain target glucose levels.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Stepper Buttons -->
+                    <div class="lg:col-span-1 flex lg:flex-col justify-between lg:space-y-4 space-x-2 lg:space-x-0">
+                        <button id="step-1" data-step="1" class="step-btn w-full py-4 px-3 bg-teal-600 text-white font-bold rounded-xl shadow-lg hover:bg-teal-700 transition duration-200">
+                            Step 1: Get the Data (Test)
+                        </button>
+                        <button id="step-2" data-step="2" class="step-btn w-full py-4 px-3 bg-gray-200 text-gray-800 font-bold rounded-xl shadow-md hover:bg-gray-300 transition duration-200">
+                            Step 2: Define the Load (Carbs)
+                        </button>
+                        <button id="step-3" data-step="3" class="step-btn w-full py-4 px-3 bg-gray-200 text-gray-800 font-bold rounded-xl shadow-md hover:bg-gray-300 transition duration-200">
+                            Step 3: Calculate the Dose (Bolus)
+                        </button>
+                    </div>
+
+                    <!-- Content Panel -->
+                    <div id="step-content" class="lg:col-span-2 p-6 bg-teal-50 border-2 border-teal-300 rounded-xl">
+                        <h4 class="text-2xl font-semibold mb-3 text-teal-800">Step 1: Get the Data (Test)</h4>
+                        <p class="mb-4">Before eating, you must know your **current blood glucose (BG)** level. This is typically done with a finger stick or, more commonly, a continuous glucose monitor (CGM).</p>
+                        <p class="font-medium">BG readings are essential because they determine if you need an **'correction dose'** to bring a high sugar down, in addition to the food dose.</p>
+                        <ul class="list-disc list-inside mt-3 space-y-1 text-sm">
+                            <li>Target BG Range: 70–180 mg/dL (4.0–10.0 mmol/L).</li>
+                            <li>Data Point: Current BG.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Key Metrics Section -->
+        <section id="metrics" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-2 border-teal-600 pb-2">4. Key Metrics: Visualizing Progress</h2>
+            <div class="bg-white p-6 rounded-xl shadow-2xl">
+                <p class="text-lg mb-8 text-gray-700">Successful T1D management is tracked using two key metrics: **Time-In-Range (TIR)** and post-meal glucose trends. These visualizations help you understand long-term control and the immediate impact of your dosing decisions.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    
+                    <!-- Chart 1: Time-In-Range (TIR) -->
+                    <div class="flex flex-col items-center">
+                        <h3 class="text-xl font-semibold mb-3 text-teal-700">Metric 1: Time-In-Range (TIR)</h3>
+                        <p class="text-center mb-4 text-sm text-gray-600">The percentage of time your glucose is between 70–180 mg/dL.</p>
+                        <div class="chart-container">
+                            <canvas id="tirChart"></canvas>
+                        </div>
+                        <div class="mt-4 p-3 bg-teal-50 rounded-lg text-center">
+                            <p class="font-bold text-teal-800">GOAL: > 70% TIR</p>
+                            <p class="text-sm">Every percentage point matters for long-term health.</p>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Post-Meal Trend -->
+                    <div class="flex flex-col items-center">
+                        <h3 class="text-xl font-semibold mb-3 text-teal-700">Metric 2: Post-Meal Glucose Trend</h3>
+                        <p class="text-center mb-4 text-sm text-gray-600">Comparing ideal glucose curve (with perfect dosing) vs. a typical high glucose spike.</p>
+                        <div class="chart-container">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                        <div class="mt-4 p-3 bg-gray-100 rounded-lg text-center">
+                            <p class="font-bold text-gray-800">Ideal Dosing:</p>
+                            <p class="text-sm">Keeps the curve flatter and prevents sharp, damaging spikes after eating.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Long-Term Focus Section -->
+        <section id="future" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-2 border-teal-600 pb-2">5. Long-Term Care: Lifestyle & Prevention</h2>
+            <div class="bg-white p-6 rounded-xl shadow-2xl">
+                <p class="text-lg mb-8 text-gray-700">Effective management relies not just on insulin, but on incorporating healthy lifestyle habits. This section highlights the role of exercise and diet in managing the condition and preventing complications.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-5 border-l-4 border-teal-500 bg-teal-50 rounded-lg">
+                        <h3 class="text-2xl font-semibold mb-3 text-teal-700">Lifestyle & Exercise</h3>
+                        <p class="mb-3">Exercise can lower blood glucose levels, often requiring a reduction in insulin doses. It's crucial to check BG before, during, and after activity.</p>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            <li>Always carry fast-acting carbohydrates (juice, glucose tabs).</li>
+                            <li>Understand that aerobic vs. anaerobic exercise affects BG differently.</li>
+                        </ul>
+                    </div>
+                    <div class="p-5 border-l-4 border-teal-500 bg-teal-50 rounded-lg">
+                        <h3 class="text-2xl font-semibold mb-3 text-teal-700">Complication Prevention</h3>
+                        <p class="mb-3">Sustained high BG over time can damage blood vessels. Consistent control prevents or delays long-term issues.</p>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            <li>Annual checks for eyes (retinopathy) and feet (neuropathy).</li>
+                            <li>Maintain tight control of blood pressure and cholesterol.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 mt-12 bg-gray-800 text-gray-400">
+        <p>This educational dashboard is for informational purposes only. Consult with your medical team for personalized advice.</p>
+    </footer>
+
+    <script>
+        // Data for the interactive elements
+        const managementSteps = {
+            1: {
+                title: "Step 1: Get the Data (Test)",
+                content: `Before eating, you must know your <strong>current blood glucose (BG)</strong> level. This is typically done with a finger stick or, more commonly, a continuous glucose monitor (CGM). BG readings are essential because they determine if you need an <strong>'correction dose'</strong> to bring a high sugar down, in addition to the food dose.
+                <ul class="list-disc list-inside mt-3 space-y-1 text-sm">
+                    <li>Target BG Range: 70–180 mg/dL (4.0–10.0 mmol/L).</li>
+                    <li>Data Point: Current BG.</li>
+                </ul>`
+            },
+            2: {
+                title: "Step 2: Define the Load (Carbs)",
+                content: `You need to accurately estimate the amount of **carbohydrates (carbs)** you plan to consume. Carbs are the macronutrient that raises blood sugar the fastest. Accurate carb counting is critical for dosing.
+                <ul class="list-disc list-inside mt-3 space-y-1 text-sm">
+                    <li>This involves reading nutrition labels or estimating portions.</li>
+                    <li>Data Point: Total grams of Carbohydrates.</li>
+                </ul>`
+            },
+            3: {
+                title: "Step 3: Calculate the Dose (Bolus)",
+                content: `The insulin dose, or **bolus**, is calculated using two primary formulas provided by your doctor: the **Insulin-to-Carb Ratio (ICR)** and the **Insulin Sensitivity Factor (ISF)**.
+                <ul class="list-disc list-inside mt-3 space-y-1 text-sm">
+                    <li><strong class="text-teal-700">Food Dose:</strong> Carbs / ICR</li>
+                    <li><strong class="text-teal-700">Correction Dose:</strong> (Current BG - Target BG) / ISF</li>
+                    <li>Total Bolus = Food Dose + Correction Dose.</li>
+                </ul>`
+            }
+        };
+
+        function toggleDetail(id) {
+            const element = document.getElementById(id);
+            if (element.classList.contains('hidden')) {
+                element.classList.remove('hidden');
+            } else {
+                element.classList.add('hidden');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const navbar = document.getElementById('navbar');
+            const stepBtns = document.querySelectorAll('.step-btn');
+            const stepContent = document.getElementById('step-content');
+
+            // --- Navigation Logic ---
+            function updateActiveNav() {
+                const navbarHeight = navbar.offsetHeight;
+                let currentSection = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - navbarHeight - 30;
+                    if (window.scrollY >= sectionTop) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('nav-active');
+                    if (link.getAttribute('data-section') === currentSection) {
+                        link.classList.add('nav-active');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', updateActiveNav);
+            updateActiveNav();
+
+            // --- Daily Management Stepper Logic ---
+            function updateStep(stepId) {
+                stepBtns.forEach(btn => {
+                    if (btn.getAttribute('data-step') == stepId) {
+                        btn.classList.replace('bg-gray-200', 'bg-teal-600');
+                        btn.classList.replace('text-gray-800', 'text-white');
+                        btn.classList.add('shadow-lg');
+                        btn.classList.remove('shadow-md');
+                    } else {
+                        btn.classList.replace('bg-teal-600', 'bg-gray-200');
+                        btn.classList.replace('text-white', 'text-gray-800');
+                        btn.classList.remove('shadow-lg');
+                        btn.classList.add('shadow-md');
+                    }
+                });
+
+                const data = managementSteps[stepId];
+                stepContent.innerHTML = `<h4 class="text-2xl font-semibold mb-3 text-teal-800">${data.title}</h4><p class="mb-4">${data.content}</p>`;
+            }
+
+            stepBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    updateStep(btn.getAttribute('data-step'));
+                });
+            });
+
+            // --- Chart.js Initialization ---
+
+            // TIR Doughnut Chart
+            new Chart(document.getElementById('tirChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Time In Range (TIR)', 'Time Above Target', 'Time Below Target'],
+                    datasets: [{
+                        data: [68, 25, 7], // Example data: 68% TIR, 25% High, 7% Low
+                        backgroundColor: ['#0d9488', '#facc15', '#ef4444'],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#374151'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Post-Meal Trend Line Chart
+            new Chart(document.getElementById('trendChart'), {
+                type: 'line',
+                data: {
+                    labels: ['0 min (Pre-Meal)', '30 min', '60 min (Peak)', '90 min', '120 min', '180 min'],
+                    datasets: [
+                        {
+                            label: 'Ideal Curve (Perfect Bolus)',
+                            data: [120, 145, 155, 140, 110, 100],
+                            borderColor: '#0d9488',
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 3
+                        },
+                        {
+                            label: 'Typical High Spike (Under-Dosed)',
+                            data: [120, 170, 250, 220, 180, 140],
+                            borderColor: '#ef4444',
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#374151',
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed.y + ' mg/dL';
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Blood Glucose (mg/dL)',
+                                color: '#374151'
+                            },
+                            min: 50,
+                            max: 300,
+                            grid: { color: '#e5e7eb' }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time After Meal',
+                                color: '#374151'
+                            },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

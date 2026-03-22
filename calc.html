@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Advanced Insulin Calculator</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center">
+
+<div class="bg-white dark:bg-gray-800 shadow-xl rounded-xl p-8 w-full max-w-md">
+
+<div class="flex justify-between items-center mb-6">
+<h1 class="text-xl font-bold dark:text-white">Insulin Calculator</h1>
+
+<button onclick="toggleDark()"
+class="text-sm bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded">
+Dark Mode
+</button>
+</div>
+
+<div class="space-y-4">
+
+<div>
+<label class="text-sm font-medium dark:text-gray-200">
+Current Blood Glucose
+</label>
+<input id="currentBG" type="range" min="60" max="400" value="120"
+class="w-full"
+oninput="updateValue('currentBGValue', this.value); calculate()">
+
+<div class="text-sm text-gray-500 dark:text-gray-300">
+<span id="currentBGValue">120</span> mg/dL
+</div>
+</div>
+
+<div>
+<label class="text-sm font-medium dark:text-gray-200">
+Target Blood Glucose
+</label>
+<input id="targetBG" type="number" value="100"
+class="w-full border p-2 rounded">
+</div>
+
+<div>
+<label class="text-sm font-medium dark:text-gray-200">
+Carbohydrates (grams)
+</label>
+<input id="carbs" type="range" min="0" max="150" value="40"
+class="w-full"
+oninput="updateValue('carbValue', this.value); calculate()">
+
+<div class="text-sm text-gray-500 dark:text-gray-300">
+<span id="carbValue">40</span> g
+</div>
+</div>
+
+<div>
+<label class="text-sm font-medium dark:text-gray-200">
+Carb Ratio (g/unit)
+</label>
+<input id="carbRatio" type="number"
+class="w-full border p-2 rounded"
+value="10">
+</div>
+
+<div>
+<label class="text-sm font-medium dark:text-gray-200">
+Correction Factor (mg/dL per unit)
+</label>
+<input id="correctionFactor" type="number"
+class="w-full border p-2 rounded"
+value="50">
+</div>
+
+</div>
+
+<div class="mt-6 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+
+<div class="text-sm dark:text-gray-200">
+Carb Dose:
+<span id="carbDose">0</span> units
+</div>
+
+<div class="text-sm dark:text-gray-200">
+Correction Dose:
+<span id="correctionDose">0</span> units
+</div>
+
+<div class="text-lg font-bold text-green-600 mt-2">
+Total Dose:
+<span id="totalDose">0</span> units
+</div>
+
+</div>
+
+<div class="mt-4 flex gap-2">
+
+<button onclick="saveSettings()"
+class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+Save Ratios
+</button>
+
+<button onclick="loadSettings()"
+class="flex-1 bg-gray-500 text-white py-2 rounded hover:bg-gray-600">
+Load
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+function updateValue(id,value){
+document.getElementById(id).innerText=value;
+}
+
+function calculate(){
+
+let currentBG = parseFloat(document.getElementById("currentBG").value);
+let targetBG = parseFloat(document.getElementById("targetBG").value);
+let carbs = parseFloat(document.getElementById("carbs").value);
+let carbRatio = parseFloat(document.getElementById("carbRatio").value);
+let correctionFactor = parseFloat(document.getElementById("correctionFactor").value);
+
+let carbDose = carbs / carbRatio;
+
+let correctionDose = (currentBG - targetBG) / correctionFactor;
+
+if(correctionDose < 0) correctionDose = 0;
+
+let total = carbDose + correctionDose;
+
+document.getElementById("carbDose").innerText = carbDose.toFixed(1);
+document.getElementById("correctionDose").innerText = correctionDose.toFixed(1);
+document.getElementById("totalDose").innerText = total.toFixed(1);
+
+}
+
+function saveSettings(){
+
+let carbRatio = document.getElementById("carbRatio").value;
+let correctionFactor = document.getElementById("correctionFactor").value;
+
+localStorage.setItem("carbRatio",carbRatio);
+localStorage.setItem("correctionFactor",correctionFactor);
+
+alert("Settings saved");
+
+}
+
+function loadSettings(){
+
+let carbRatio = localStorage.getItem("carbRatio");
+let correctionFactor = localStorage.getItem("correctionFactor");
+
+if(carbRatio) document.getElementById("carbRatio").value = carbRatio;
+if(correctionFactor) document.getElementById("correctionFactor").value = correctionFactor;
+
+calculate();
+
+}
+
+function toggleDark(){
+
+document.documentElement.classList.toggle("dark");
+
+}
+
+calculate();
+
+</script>
+
+</body>
+</html>

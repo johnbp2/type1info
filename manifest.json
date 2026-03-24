@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json.schemastore.org/web-manifest",
+  "short_name": "InsulinCalc",
+  "name": "Insulin Bolus Calc",
+  "description": "description",
+  "scope": "/",
+  "icons": [ ],
+  "background_color": "#EEE",
+  "theme_color": "#1565c0",
+  "start_url": "/calc.html",
+  "display": "standalone",
+  "orientation": "any"
+}

@@ -5,7 +5,7 @@
 <title>Advanced Insulin Calculator</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-
+<link rel="manifest" href="/manifest.json">
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center">
@@ -15,7 +15,7 @@
 <div class="flex justify-between items-center mb-6">
 <h1 class="text-xl font-bold dark:text-white">Insulin Calculator</h1>
 
-<button onclick="toggleDark()"
+<button type="button" onclick="toggleDark()"
 class="text-sm bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded">
 Dark Mode
 </button>
@@ -98,12 +98,12 @@ Total Dose:
 
 <div class="mt-4 flex gap-2">
 
-<button onclick="saveSettings()"
+<button type="button" onclick="saveSettings()"
 class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
 Save Ratios
 </button>
 
-<button onclick="loadSettings()"
+<button type="button" onclick="loadSettings()"
 class="flex-1 bg-gray-500 text-white py-2 rounded hover:bg-gray-600">
 Load
 </button>

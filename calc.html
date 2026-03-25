@@ -133,10 +133,10 @@ let correctionDose = (currentBG - targetBG) / correctionFactor;
 if(correctionDose < 0) correctionDose = 0;
 
 let total = carbDose + correctionDose;
-
+let roundedTotal = Math.round(total);
 document.getElementById("carbDose").innerText = carbDose.toFixed(1);
 document.getElementById("correctionDose").innerText = correctionDose.toFixed(1);
-document.getElementById("totalDose").innerText = total.toFixed(1);
+document.getElementById("totalDose").innerText = roundedTotal.toFixed(1);
 
 }
 

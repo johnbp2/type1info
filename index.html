@@ -47,6 +47,7 @@
                 <a href="#management" data-section="management" class="nav-link whitespace-nowrap text-gray-600 hover:text-teal-700 pb-2 transition-all duration-200">Daily Cycle</a>
                 <a href="#metrics" data-section="metrics" class="nav-link whitespace-nowrap text-gray-600 hover:text-teal-700 pb-2 transition-all duration-200">Key Metrics</a>
                 <a href="#future" data-section="future" class="nav-link whitespace-nowrap text-gray-600 hover:text-teal-700 pb-2 transition-all duration-200">Long-Term Care</a>
+                <a href="calc.html" >Insulin Bolus Calculators</a>
             </div>
         </div>
     </nav>
@@ -67,13 +68,13 @@
                     <div>
                         <h3 class="text-2xl font-semibold text-teal-700 mb-3">Key Symptoms (Click to Expand)</h3>
                         <div id="symptoms-list" class="space-y-2">
-                            <button class="w-full text-left bg-gray-100 p-3 rounded-lg font-medium hover:bg-teal-50 transition duration-200" onclick="toggleDetail('symptom-thirst')">Excessive Thirst / Urination</button>
+                            <button type="button" class="w-full text-left bg-gray-100 p-3 rounded-lg font-medium hover:bg-teal-50 transition duration-200" onclick="toggleDetail('symptom-thirst')">Excessive Thirst / Urination</button>
                             <p id="symptom-thirst" class="hidden text-sm p-2 pl-4 text-gray-600 border-l-2 border-teal-500">The body tries to flush out excess sugar through urine, leading to dehydration and intense thirst.</p>
                             
-                            <button class="w-full text-left bg-gray-100 p-3 rounded-lg font-medium hover:bg-teal-50 transition duration-200" onclick="toggleDetail('symptom-weight')">Unexplained Weight Loss</button>
+                            <button type="button" class="w-full text-left bg-gray-100 p-3 rounded-lg font-medium hover:bg-teal-50 transition duration-200" onclick="toggleDetail('symptom-weight')">Unexplained Weight Loss</button>
                             <p id="symptom-weight" class="hidden text-sm p-2 pl-4 text-gray-600 border-l-2 border-teal-500">Without insulin, the body cannot use glucose for energy and starts breaking down fat and muscle.</p>
 
-                            <button class="w-full text-left bg-gray-100 p-3 rounded-lg font-medium hover:bg-teal-50 transition duration-200" onclick="toggleDetail('symptom-fatigue')">Extreme Fatigue</button>
+                            <button type="button" class="w-full text-left bg-gray-100 p-3 rounded-lg font-medium hover:bg-teal-50 transition duration-200" onclick="toggleDetail('symptom-fatigue')">Extreme Fatigue</button>
                             <p id="symptom-fatigue" class="hidden text-sm p-2 pl-4 text-gray-600 border-l-2 border-teal-500">The lack of energy from glucose results in persistent tiredness and weakness.</p>
                         </div>
                     </div>
@@ -126,13 +127,13 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- Stepper Buttons -->
                     <div class="lg:col-span-1 flex lg:flex-col justify-between lg:space-y-4 space-x-2 lg:space-x-0">
-                        <button id="step-1" data-step="1" class="step-btn w-full py-4 px-3 bg-teal-600 text-white font-bold rounded-xl shadow-lg hover:bg-teal-700 transition duration-200">
+                        <button type="button" id="step-1" data-step="1" class="step-btn w-full py-4 px-3 bg-teal-600 text-white font-bold rounded-xl shadow-lg hover:bg-teal-700 transition duration-200">
                             Step 1: Get the Data (Test)
                         </button>
-                        <button id="step-2" data-step="2" class="step-btn w-full py-4 px-3 bg-gray-200 text-gray-800 font-bold rounded-xl shadow-md hover:bg-gray-300 transition duration-200">
+                        <button type="button" id="step-2" data-step="2" class="step-btn w-full py-4 px-3 bg-gray-200 text-gray-800 font-bold rounded-xl shadow-md hover:bg-gray-300 transition duration-200">
                             Step 2: Define the Load (Carbs)
                         </button>
-                        <button id="step-3" data-step="3" class="step-btn w-full py-4 px-3 bg-gray-200 text-gray-800 font-bold rounded-xl shadow-md hover:bg-gray-300 transition duration-200">
+                        <button type="button" id="step-3" data-step="3" class="step-btn w-full py-4 px-3 bg-gray-200 text-gray-800 font-bold rounded-xl shadow-md hover:bg-gray-300 transition duration-200">
                             Step 3: Calculate the Dose (Bolus)
                         </button>
                     </div>

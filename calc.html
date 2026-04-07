@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <title>Advanced Insulin Calculator</title>
 
-<script src="https://cdn.tailwindcss.com"></script>
+<link href="./output.css" rel="stylesheet">
 <link rel="manifest" href="/manifest.json">
-<script src="main.css" ></script>
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center">
@@ -166,10 +165,16 @@ calculate();
 }
 
 function toggleDark(){
-    let page = document.querySelector('.dark');
-page.classList.toggle("dark");
 
-}
+    if (document.body.classList.contains('dark')) {
+      document.body.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+    // Update icons logic...
+  }
 
 calculate();
 

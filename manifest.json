@@ -4,7 +4,17 @@
   "name": "Insulin Bolus Calc",
   "description": "description",
   "scope": "/",
-  "icons": [ ],
+  "icons": [ 
+    {
+      "src": "calculator16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "calculator32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }],
   "background_color": "#EEE",
   "theme_color": "#1565c0",
   "start_url": "/calc.html",
